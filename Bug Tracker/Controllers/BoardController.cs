@@ -1,4 +1,5 @@
 ﻿using Bug_Tracker.Data;
+using Bug_Tracker.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -34,8 +35,12 @@ namespace Bug_Tracker.Controllers
 
         // POST api/<BoardController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody]Board value)
         {
+            _context.Boards.Add(value);
+            _context.SaveChanges();
+            return StatusCode(200, value);
+
         }
 
         // PUT api/<BoardController>/5
