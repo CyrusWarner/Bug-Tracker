@@ -61,8 +61,12 @@ namespace Bug_Tracker.Controllers
 
         // DELETE api/<IssuesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var issue = _context.Issues.FirstOrDefault(issue => issue.IssuesId == id);
+            _context.Remove(issue);
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }
