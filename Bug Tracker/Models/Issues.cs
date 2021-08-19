@@ -21,7 +21,7 @@ namespace Bug_Tracker.Models
         public Board Board { get; set; }
 
         [ForeignKey("User")]
-        public string UserId { get; set; }
+        public int UserId { get; set; }
         public User User { get; set; }
     }
 }

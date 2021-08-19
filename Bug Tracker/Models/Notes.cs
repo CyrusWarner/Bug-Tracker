@@ -13,7 +13,7 @@ namespace Bug_Tracker.Models
         public string Description { get; set; }
 
         [ForeignKey("User")]
-        public string UserId { get; set; }
+        public int UserId { get; set; }
         public User User { get; set; }
 
         [ForeignKey("Board")]
