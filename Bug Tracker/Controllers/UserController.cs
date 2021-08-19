@@ -28,8 +28,8 @@ namespace Bug_Tracker.Controllers
         }
 
         // GET api/<UserController>/5
-        [HttpGet("Login")]
-        public IActionResult Get([FromBody]User value)
+        [HttpPost("Login")]
+        public IActionResult GetUser([FromBody]User value)
         {
             var user = _context.Users.FirstOrDefault(user => user.Email == value.Email && user.Password == value.Password);
             return StatusCode(200, user);
@@ -39,9 +39,15 @@ namespace Bug_Tracker.Controllers
         [HttpPost]
         public IActionResult Post([FromBody]User value)
         {
-            _context.Users.Add(value);
-            _context.SaveChanges();
-            return StatusCode(200, value);
+            var users = _context.Users.Where(user => user.Email == value.Email);
+            if(users.Count() == 0)
+            {
+                _context.Users.Add(value);
+                _context.SaveChanges();
+                return StatusCode(200, value);
+            }
+            return StatusCode(409);
+
         }
 
         // PUT api/<UserController>/5
