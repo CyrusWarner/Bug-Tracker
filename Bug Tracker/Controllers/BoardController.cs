@@ -29,10 +29,16 @@ namespace Bug_Tracker.Controllers
 
         // GET api/<BoardController>/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult GetusersBoard(int id)
         {
             var userBoards = _context.Boards.Where(board => board.UserId == id);
             return Ok(userBoards);
+        }
+        [HttpGet("CurrentBoard/{id}")]
+        public IActionResult GetBoard(int id)
+        {
+            var board = _context.Boards.Where(board => board.BoardId == id);
+            return Ok(board);
         }
 
         // POST api/<BoardController>

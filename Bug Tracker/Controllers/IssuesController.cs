@@ -21,10 +21,10 @@ namespace Bug_Tracker.Controllers
             _context = context;
         }
         // GET: api/<IssuesController>
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("BoardIssues/{id}")]
+        public IActionResult GetBoardIssues(int id)
         {
-            var issues = _context.Issues;
+            var issues = _context.Issues.Where(issue => issue.BoardId == id);
             return StatusCode(200, issues);
         }
 
