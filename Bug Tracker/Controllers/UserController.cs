@@ -41,7 +41,6 @@ namespace Bug_Tracker.Controllers
             var user = _context.Users.FirstOrDefault(user => user.Email == value.Email && user.Password == value.Password);
             return StatusCode(200, user);
         }
-
         // POST api/User>
         [HttpPost]
         public IActionResult Post([FromBody]User value)
@@ -57,16 +56,20 @@ namespace Bug_Tracker.Controllers
 
         }
 
-        // PUT api/<UserController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //// PUT api/<UserController>/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var userBoardRelationship = _context.UserBoard.Where(ur => ur.UserId == id);
+            _context.Remove(userBoardRelationship);
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }
