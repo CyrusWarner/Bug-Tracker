@@ -20,6 +20,8 @@ namespace Bug_Tracker.Models
         [DataMember]
         public string Email { get; set; }
 
+        public virtual ICollection<UserBoard> Boards { get; set; }
+
         //ignored
         [IgnoreDataMember]
         public string Password { get; set; }

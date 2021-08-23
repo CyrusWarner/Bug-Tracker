@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Bug_Tracker.Models
 {
-    public class Board
+    public class Events
     {
-        public int BoardId { get; set; }
-
+        public int EventsId { get; set; }
         public string Title { get; set; }
+        public string Date { get; set; }
 
-        public string Description { get; set; }
-
-        public virtual ICollection<UserBoard> Users { get; set; }
+        [ForeignKey("Board")]
+        public int BoardId { get; set; }
+        public Board Board { get; set; }
     }
 }

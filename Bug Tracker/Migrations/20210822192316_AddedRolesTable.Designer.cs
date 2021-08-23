@@ -3,20 +3,37 @@ using Bug_Tracker.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bug_Tracker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210822192316_AddedRolesTable")]
+    partial class AddedRolesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("BoardUser", b =>
+                {
+                    b.Property<int>("BoardsBoardId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BoardsBoardId", "UsersUserId");
+
+                    b.HasIndex("UsersUserId");
+
+                    b.ToTable("BoardUser");
+                });
 
             modelBuilder.Entity("Bug_Tracker.Models.Board", b =>
                 {
@@ -157,19 +174,19 @@ namespace Bug_Tracker.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Bug_Tracker.Models.UserBoard", b =>
+            modelBuilder.Entity("BoardUser", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.HasOne("Bug_Tracker.Models.Board", null)
+                        .WithMany()
+                        .HasForeignKey("BoardsBoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("BoardId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "BoardId");
-
-                    b.HasIndex("BoardId");
-
-                    b.ToTable("UserBoard");
+                    b.HasOne("Bug_Tracker.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Bug_Tracker.Models.Events", b =>
@@ -219,35 +236,6 @@ namespace Bug_Tracker.Migrations
                     b.Navigation("Board");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Bug_Tracker.Models.UserBoard", b =>
-                {
-                    b.HasOne("Bug_Tracker.Models.Board", "Board")
-                        .WithMany("Users")
-                        .HasForeignKey("BoardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Bug_Tracker.Models.User", "User")
-                        .WithMany("Boards")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Board");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Bug_Tracker.Models.Board", b =>
-                {
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("Bug_Tracker.Models.User", b =>
-                {
-                    b.Navigation("Boards");
                 });
 #pragma warning restore 612, 618
         }

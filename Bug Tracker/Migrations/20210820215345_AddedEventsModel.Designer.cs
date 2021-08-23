@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bug_Tracker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210819160053_UserDataContract")]
-    partial class UserDataContract
+    [Migration("20210820215345_AddedEventsModel")]
+    partial class AddedEventsModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -41,6 +41,29 @@ namespace Bug_Tracker.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Boards");
+                });
+
+            modelBuilder.Entity("Bug_Tracker.Models.Events", b =>
+                {
+                    b.Property<int>("EventsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BoardId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Date")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EventsId");
+
+                    b.HasIndex("BoardId");
+
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("Bug_Tracker.Models.Issues", b =>
@@ -135,6 +158,17 @@ namespace Bug_Tracker.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Bug_Tracker.Models.Events", b =>
+                {
+                    b.HasOne("Bug_Tracker.Models.Board", "Board")
+                        .WithMany()
+                        .HasForeignKey("BoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Board");
                 });
 
             modelBuilder.Entity("Bug_Tracker.Models.Issues", b =>

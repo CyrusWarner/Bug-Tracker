@@ -53,7 +53,6 @@ namespace Bug_Tracker.Controllers
             issue.Title = value.Title;
             issue.Description = value.Description;
             issue.isCompleted = value.isCompleted;
-            issue.BoardId = value.BoardId;
             issue.UserId = value.UserId;
             _context.SaveChanges();
             return Ok(value);

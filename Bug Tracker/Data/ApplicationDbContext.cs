@@ -19,13 +19,27 @@ namespace Bug_Tracker.Data
 
         public DbSet <Board> Boards { get; set; }
         public DbSet <Issues> Issues { get; set; }
-        public DbSet<Notes> Notes { get; set; }
-
+        public DbSet <Notes> Notes { get; set; }
+        public DbSet<Events> Events { get; set; }
         public DbSet <User> Users { get; set; }
+        public DbSet <Roles> Roles { get; set; }
+        public DbSet <UserBoard> UserBoard { get; set; }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-        //}
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            //base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<UserBoard>()
+                .HasKey(ur => new { ur.UserId, ur.BoardId });
+            modelBuilder.Entity<UserBoard>()
+                .HasOne(Ur => Ur.User)
+                .WithMany(ur => ur.Boards)
+                .HasForeignKey(ur => ur.UserId);
+            modelBuilder.Entity<UserBoard>()
+                .HasOne(ur => ur.Board)
+                .WithMany(ur => ur.Users)
+                .HasForeignKey(ur => ur.BoardId);
+                
+        }
     }
 }

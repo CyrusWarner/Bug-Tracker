@@ -20,10 +20,10 @@ namespace Bug_Tracker.Controllers
             _context = context;
         }
         // GET: api/<NotesController>
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("BoardNotes/{id}")]
+        public IActionResult GetBoardNotes(int id)
         {
-            var notes = _context.Notes;
+            var notes = _context.Notes.Where(note => note.BoardId == id);
             return Ok(notes);
         }
 
@@ -36,7 +36,7 @@ namespace Bug_Tracker.Controllers
         }
 
         // POST api/<NotesController>
-        [HttpPost]
+        [HttpPost("New")]
         public IActionResult Post([FromBody]Notes value)
         {
             _context.Notes.Add(value);
@@ -53,6 +53,7 @@ namespace Bug_Tracker.Controllers
             note.Description = value.Description;
             note.UserId = value.UserId;
             note.BoardId = value.BoardId;
+            _context.SaveChanges();
             return Ok(value);
 
         }

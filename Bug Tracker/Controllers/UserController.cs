@@ -19,11 +19,18 @@ namespace Bug_Tracker.Controllers
         {
             _context = context;
         }
-        // GET: api/<UserController>
+
         [HttpGet]
         public IActionResult Get()
         {
             var users = _context.Users;
+            return Ok(users);
+        }
+        // GET: api/<UserController>
+        [HttpGet("{boardId}")]
+        public IActionResult Get(int boardId)
+        {
+            var users = _context.Users.Where(u => u.Boards.Any(b => b.BoardId == boardId));
             return Ok(users);
         }
 
