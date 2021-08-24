@@ -1,6 +1,7 @@
 ﻿using Bug_Tracker.Data;
 using Bug_Tracker.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,17 +37,17 @@ namespace Bug_Tracker.Controllers
 
         // GET api/<UserController>/5
         [HttpPost("Login")]
-        public IActionResult GetUser([FromBody]User value)
+        public IActionResult GetUser([FromBody] User value)
         {
             var user = _context.Users.FirstOrDefault(user => user.Email == value.Email && user.Password == value.Password);
             return StatusCode(200, user);
         }
         // POST api/User>
         [HttpPost]
-        public IActionResult Post([FromBody]User value)
+        public IActionResult Post([FromBody] User value)
         {
             var users = _context.Users.Where(user => user.Email == value.Email);
-            if(users.Count() == 0)
+            if (users.Count() == 0)
             {
                 _context.Users.Add(value);
                 _context.SaveChanges();
@@ -56,6 +57,20 @@ namespace Bug_Tracker.Controllers
 
         }
 
+        [HttpPost("InvitingUserToBoard/{userId}")]
+        public IActionResult AddBoardToUserBoard(int userId, [FromBody] Board value)
+        {
+            var newUserBoard = new UserBoard()
+            {
+                UserId = userId,
+                BoardId = value.BoardId,
+                RolesId = 1,
+            };
+            _context.UserBoard.Add(newUserBoard);
+            _context.SaveChanges();
+            return Ok();
+        }
+
         //// PUT api/<UserController>/5
         //[HttpPut("{id}")]
         //public void Put(int id, [FromBody] string value)
@@ -63,11 +78,15 @@ namespace Bug_Tracker.Controllers
         //}
 
         // DELETE api/<UserController>/5
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("{userId}/Board/{boardId}")]
+        public IActionResult Delete(int userId, int boardId)
         {
-            var userBoardRelationship = _context.UserBoard.Where(ur => ur.UserId == id);
-            _context.Remove(userBoardRelationship);
+            var userBoardRelationship = _context.UserBoard.Where(ur => ur.UserId == userId && ur.BoardId == boardId);
+            foreach(UserBoard userRelationship in userBoardRelationship)
+            {
+                _context.Remove(userRelationship);
+
+            }
             _context.SaveChanges();
             return Ok();
         }
