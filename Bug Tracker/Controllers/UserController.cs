@@ -35,6 +35,15 @@ namespace Bug_Tracker.Controllers
             return Ok(users);
         }
 
+        [HttpGet("GetUserRole/Board/{boardId}/User/{userId}")]
+        public IActionResult GetUserRole(int boardId, int userId)
+        {
+            var userRole = _context.UserBoard.Include(ur => ur.Roles).Where(u => u.BoardId == boardId && u.UserId == userId);
+            return Ok(userRole);
+        }
+
+
+
         // GET api/<UserController>/5
         [HttpPost("Login")]
         public IActionResult GetUser([FromBody] User value)
@@ -64,7 +73,7 @@ namespace Bug_Tracker.Controllers
             {
                 UserId = userId,
                 BoardId = value.BoardId,
-                RolesId = 1,
+                RolesId = 2,
             };
             _context.UserBoard.Add(newUserBoard);
             _context.SaveChanges();
