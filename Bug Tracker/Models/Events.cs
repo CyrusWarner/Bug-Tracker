@@ -11,6 +11,7 @@ namespace Bug_Tracker.Models
         public int EventsId { get; set; }
         public string Title { get; set; }
         public string Date { get; set; }
+        public string Assignee { get; set; }
 
         [ForeignKey("Board")]
         public int BoardId { get; set; }
