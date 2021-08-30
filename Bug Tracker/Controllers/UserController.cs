@@ -70,15 +70,20 @@ namespace Bug_Tracker.Controllers
         [HttpPost("InvitingUserToBoard/{userId}")]
         public IActionResult AddBoardToUserBoard(int userId, [FromBody] Board value)
         {
-            var newUserBoard = new UserBoard()
+            var users = _context.UserBoard.Where(ub => ub.BoardId == value.BoardId && ub.UserId == userId);
+            if (users.Count() == 0)
             {
-                UserId = userId,
-                BoardId = value.BoardId,
-                RolesId = 2,
-            };
-            _context.UserBoard.Add(newUserBoard);
-            _context.SaveChanges();
-            return Ok();
+                var newUserBoard = new UserBoard()
+                {
+                    UserId = userId,
+                    BoardId = value.BoardId,
+                    RolesId = 2,
+                };
+                _context.UserBoard.Add(newUserBoard);
+                _context.SaveChanges();
+                return Ok();
+            }
+            return StatusCode(409);
         }
 
         //// PUT api/<UserController>/5
