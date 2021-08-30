@@ -48,8 +48,9 @@ namespace Bug_Tracker.Controllers
         [HttpPost("Login")]
         public IActionResult GetUser([FromBody] User value)
         {
-            var user = _context.Users.FirstOrDefault(user => user.Email == value.Email && user.Password == value.Password);
-            return StatusCode(200, user);
+                var user = _context.Users.FirstOrDefault(user => user.Email == value.Email && user.Password == value.Password);
+                return StatusCode(200, user);
+
         }
         // POST api/User>
         [HttpPost]

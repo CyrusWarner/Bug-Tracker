@@ -44,8 +44,12 @@ namespace Bug_Tracker.Controllers
 
         // DELETE api/<EventsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var eventToDelete = _context.Events.FirstOrDefault(e => e.EventsId == id);
+            _context.Remove(eventToDelete);
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }

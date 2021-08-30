@@ -20,10 +20,10 @@ namespace Bug_Tracker.Controllers
             _context = context;
         }
         // GET: api/<NotesController>
-        [HttpGet("BoardNotes/{id}")]
-        public IActionResult GetBoardNotes(int id)
+        [HttpGet("BoardNotes/board/{boardId}/user/{userId}")]
+        public IActionResult GetBoardNotes(int boardId, int userId)
         {
-            var notes = _context.Notes.Where(note => note.BoardId == id);
+            var notes = _context.Notes.Where(note => note.BoardId == boardId && note.UserId == userId);
             return Ok(notes);
         }
 
