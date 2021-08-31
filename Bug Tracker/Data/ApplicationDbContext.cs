@@ -28,18 +28,21 @@ namespace Bug_Tracker.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<UserBoard>()
-                .HasKey(ur => new { ur.UserId, ur.BoardId });
-            modelBuilder.Entity<UserBoard>()
-                .HasOne(Ur => Ur.User)
-                .WithMany(ur => ur.Boards)
-                .HasForeignKey(ur => ur.UserId);
-            modelBuilder.Entity<UserBoard>()
-                .HasOne(ur => ur.Board)
-                .WithMany(ur => ur.Users)
-                .HasForeignKey(ur => ur.BoardId);
-                
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Roles>().HasData(new Roles { RolesId = 1, RoleName = "Admin" });
+            modelBuilder.Entity<Roles>().HasData(new Roles { RolesId = 2, RoleName = "User" });
+
+            //modelBuilder.Entity<UserBoard>()
+            //    .HasKey(ur => new { ur.UserId, ur.BoardId });
+            //modelBuilder.Entity<UserBoard>()
+            //    .HasOne(Ur => Ur.User)
+            //    .WithMany(ur => ur.Boards)
+            //    .HasForeignKey(ur => ur.UserId);
+            //modelBuilder.Entity<UserBoard>()
+            //    .HasOne(ur => ur.Board)
+            //    .WithMany(ur => ur.Users)
+            //    .HasForeignKey(ur => ur.BoardId);
+
         }
     }
 }
