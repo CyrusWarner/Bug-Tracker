@@ -24,7 +24,7 @@ namespace Bug_Tracker.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var boards = _context.Boards.Where(b => b.Users.Any(b => b.UserId == id));
+            var boards = _context.UserBoard.Include(ub => ub.Board).Where(b => b.UserId == id);
             return Ok(boards);
         }
 
@@ -60,15 +60,27 @@ namespace Bug_Tracker.Controllers
                 UserId = userId,
                 BoardId = value.BoardId,
                 RolesId = 3,
+                InviteAccepted = true,
             };
             _context.UserBoard.Add(newUserBoard);
             _context.SaveChanges();
             return Ok();
         }
-        // PUT api/<BoardController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("acceptBoardInvitation/{userId}")]
+        public IActionResult AcceptBoardInvite([FromBody] Board value, int userId)
         {
+            var oldUserBoardRelationship = _context.UserBoard.Where(ub => ub.BoardId == value.BoardId && ub.UserId == userId).SingleOrDefault();
+            _context.UserBoard.Remove(oldUserBoardRelationship);
+            UserBoard newUserBoard = new UserBoard()
+            {
+                UserId = userId,
+                BoardId = value.BoardId,
+                RolesId = 2,
+                InviteAccepted = true,
+            };
+            _context.UserBoard.Add(newUserBoard);
+            _context.SaveChanges();
+            return Ok();
         }
 
         // DELETE api/<BoardController>/5
