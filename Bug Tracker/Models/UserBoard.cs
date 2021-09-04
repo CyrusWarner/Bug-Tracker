@@ -14,6 +14,8 @@ namespace Bug_Tracker.Models
         public int BoardId { get; set; }
         public Board Board { get; set; }
 
+        public bool InviteAccepted { get; set; }
+
         [ForeignKey("Roles")]
         public int RolesId { get; set; }
         public Roles Roles { get; set; }

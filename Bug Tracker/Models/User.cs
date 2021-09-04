@@ -23,7 +23,7 @@ namespace Bug_Tracker.Models
         public virtual ICollection<UserBoard> Boards { get; set; }
 
         //ignored
-        [IgnoreDataMember]
+        [DataMember]
         public string Password { get; set; }
     }
 }

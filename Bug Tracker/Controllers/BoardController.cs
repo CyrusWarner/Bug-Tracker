@@ -59,7 +59,7 @@ namespace Bug_Tracker.Controllers
             {
                 UserId = userId,
                 BoardId = value.BoardId,
-                RolesId = 1,
+                RolesId = 3,
             };
             _context.UserBoard.Add(newUserBoard);
             _context.SaveChanges();

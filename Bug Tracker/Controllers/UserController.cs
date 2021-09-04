@@ -31,7 +31,7 @@ namespace Bug_Tracker.Controllers
         [HttpGet("{boardId}")]
         public IActionResult Get(int boardId)
         {
-            var users = _context.Users.Where(u => u.Boards.Any(b => b.BoardId == boardId));
+            var users = _context.UserBoard.Include(u => u.User).Include(r => r.Roles).Where(ub => ub.BoardId == boardId);
             return Ok(users);
         }
 
@@ -84,6 +84,22 @@ namespace Bug_Tracker.Controllers
                 return Ok();
             }
             return StatusCode(409);
+        }
+
+        [HttpPost("EditRole/{roleId}")]
+        public IActionResult EditRole([FromBody] UserBoard value, int roleId)
+        {
+            var oldBoardUserRelationship = _context.UserBoard.Where(ub => ub.UserId == value.UserId && ub.BoardId == value.BoardId).SingleOrDefault();
+            _context.UserBoard.Remove(oldBoardUserRelationship);
+            UserBoard updatedUserBoardRole = new UserBoard()
+            {
+                UserId = value.UserId,
+                BoardId = value.BoardId,
+                RolesId = roleId,
+            };
+            _context.UserBoard.Add(updatedUserBoardRole);
+            _context.SaveChanges();
+            return Ok();
         }
 
         //// PUT api/<UserController>/5
