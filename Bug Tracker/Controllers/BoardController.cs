@@ -24,7 +24,14 @@ namespace Bug_Tracker.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var boards = _context.UserBoard.Include(ub => ub.Board).Where(b => b.UserId == id);
+            var boards = _context.UserBoard.Include(ub => ub.Board).Where(b => b.UserId == id && b.InviteAccepted == true);
+            return Ok(boards);
+        }
+
+        [HttpGet("InvitedBoards/{userId}")]
+        public IActionResult getInvitedBoards(int userId)
+        {
+            var boards = _context.UserBoard.Include(ub => ub.Board).Where(b => b.UserId == userId && b.InviteAccepted == false);
             return Ok(boards);
         }
 
@@ -34,11 +41,11 @@ namespace Bug_Tracker.Controllers
         //{
 
         //}
-        [HttpGet("CurrentBoard/{id}")]
-        public IActionResult GetBoard(int id)
+        [HttpGet("CurrentBoard/{id}/{userId}")]
+        public IActionResult GetBoard(int id, int userId)
         {
             //QUERY ALL BOARDS OF A USER FROM JUNCTION TABLE HERE
-            var board = _context.Boards.Where(board => board.BoardId == id);
+            var board = _context.UserBoard.Include(b => b.Board).Where(ub => ub.BoardId == id && ub.UserId == userId);
             return Ok(board);
 
         }
@@ -84,9 +91,13 @@ namespace Bug_Tracker.Controllers
         }
 
         // DELETE api/<BoardController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("removeBoard/{boardId}/User/{userId}")]
+        public IActionResult RemoveBoard(int boardId, int userId)
         {
+            var userBoardRelationship = _context.UserBoard.Where(ub => ub.BoardId == boardId && ub.UserId == userId).SingleOrDefault();
+            _context.UserBoard.Remove(userBoardRelationship);
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }
