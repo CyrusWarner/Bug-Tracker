@@ -49,6 +49,10 @@ namespace Bug_Tracker.Controllers
         public IActionResult GetUser([FromBody] User value)
         {
                 var user = _context.Users.FirstOrDefault(user => user.Email == value.Email && user.Password == value.Password);
+            if (user == null)
+            {
+                return StatusCode(404);
+            }
                 return StatusCode(200, user);
 
         }
@@ -96,6 +100,7 @@ namespace Bug_Tracker.Controllers
                 UserId = value.UserId,
                 BoardId = value.BoardId,
                 RolesId = roleId,
+                InviteAccepted = true
             };
             _context.UserBoard.Add(updatedUserBoardRole);
             _context.SaveChanges();
