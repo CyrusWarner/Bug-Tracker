@@ -93,10 +93,6 @@ namespace Bug_Tracker.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Boards_UserId",
-                table: "Boards",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Issues_BoardId",

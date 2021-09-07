@@ -82,6 +82,7 @@ namespace Bug_Tracker.Controllers
                     UserId = userId,
                     BoardId = value.BoardId,
                     RolesId = 2,
+                    InviteAccepted = false,
                 };
                 _context.UserBoard.Add(newUserBoard);
                 _context.SaveChanges();
