@@ -242,11 +242,6 @@ namespace Bug_Tracker.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Bug_Tracker.Models.Board", b =>
-                {
-                    b.Navigation("Users");
-                });
-
             modelBuilder.Entity("Bug_Tracker.Models.User", b =>
                 {
                     b.Navigation("Boards");

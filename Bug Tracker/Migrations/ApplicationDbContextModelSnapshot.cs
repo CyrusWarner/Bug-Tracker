@@ -49,10 +49,13 @@ namespace Bug_Tracker.Migrations
                     b.Property<int>("BoardId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Date")
+                    b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("end")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("start")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EventsId");
@@ -167,6 +170,9 @@ namespace Bug_Tracker.Migrations
 
                     b.Property<int>("BoardId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("InviteAccepted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("RolesId")
                         .HasColumnType("int");

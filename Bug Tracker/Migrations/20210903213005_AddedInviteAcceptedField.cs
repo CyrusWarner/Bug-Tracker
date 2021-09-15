@@ -2,7 +2,7 @@
 
 namespace Bug_Tracker.Migrations
 {
-    public partial class AddedInviteAcceptedFieldToUserBoardModel : Migration
+    public partial class AddedInviteAcceptedField : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

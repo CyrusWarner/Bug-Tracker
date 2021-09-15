@@ -33,12 +33,12 @@ namespace Bug_Tracker.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    //b.Property<int>("UserId")
+                    //    .HasColumnType("int");
 
                     b.HasKey("BoardId");
 
-                    b.HasIndex("UserId");
+                    //b.HasIndex("UserId");
 
                     b.ToTable("Boards");
                 });
@@ -126,16 +126,6 @@ namespace Bug_Tracker.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Bug_Tracker.Models.Board", b =>
-                {
-                    b.HasOne("Bug_Tracker.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
 
             modelBuilder.Entity("Bug_Tracker.Models.Issues", b =>
                 {

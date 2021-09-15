@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bug_Tracker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210819155512_IgnorePasswordField")]
-    partial class IgnorePasswordField
+    [Migration("20210903213005_AddedInviteAcceptedField")]
+    partial class AddedInviteAcceptedField
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,14 +33,35 @@ namespace Bug_Tracker.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("BoardId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Boards");
+                });
+
+            modelBuilder.Entity("Bug_Tracker.Models.Events", b =>
+                {
+                    b.Property<int>("EventsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Assignee")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("BoardId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Date")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EventsId");
+
+                    b.HasIndex("BoardId");
+
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("Bug_Tracker.Models.Issues", b =>
@@ -102,6 +123,21 @@ namespace Bug_Tracker.Migrations
                     b.ToTable("Notes");
                 });
 
+            modelBuilder.Entity("Bug_Tracker.Models.Roles", b =>
+                {
+                    b.Property<int>("RolesId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("RoleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RolesId");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("Bug_Tracker.Models.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -126,15 +162,38 @@ namespace Bug_Tracker.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Bug_Tracker.Models.Board", b =>
+            modelBuilder.Entity("Bug_Tracker.Models.UserBoard", b =>
                 {
-                    b.HasOne("Bug_Tracker.Models.User", "User")
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BoardId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("InviteAccepted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("RolesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "BoardId");
+
+                    b.HasIndex("BoardId");
+
+                    b.HasIndex("RolesId");
+
+                    b.ToTable("UserBoard");
+                });
+
+            modelBuilder.Entity("Bug_Tracker.Models.Events", b =>
+                {
+                    b.HasOne("Bug_Tracker.Models.Board", "Board")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("BoardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Board");
                 });
 
             modelBuilder.Entity("Bug_Tracker.Models.Issues", b =>
@@ -173,6 +232,43 @@ namespace Bug_Tracker.Migrations
                     b.Navigation("Board");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Bug_Tracker.Models.UserBoard", b =>
+                {
+                    b.HasOne("Bug_Tracker.Models.Board", "Board")
+                        .WithMany("Users")
+                        .HasForeignKey("BoardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bug_Tracker.Models.Roles", "Roles")
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Bug_Tracker.Models.User", "User")
+                        .WithMany("Boards")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Board");
+
+                    b.Navigation("Roles");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Bug_Tracker.Models.Board", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Bug_Tracker.Models.User", b =>
+                {
+                    b.Navigation("Boards");
                 });
 #pragma warning restore 612, 618
         }
