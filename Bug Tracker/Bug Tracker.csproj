@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="UploadedFiles\test.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
