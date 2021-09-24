@@ -12,11 +12,9 @@ namespace Bug_Tracker.Controllers
     [ApiController]
     public class BoardController : ControllerBase
     {
-        private ApplicationDbContext _context;
         private readonly IBoardRepository _boardRepository;
-        public BoardController(ApplicationDbContext context, IBoardRepository boardRepository)
+        public BoardController(IBoardRepository boardRepository)
         {
-            _context = context;
             _boardRepository = boardRepository;
         }
 

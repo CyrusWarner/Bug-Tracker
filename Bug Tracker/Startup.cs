@@ -46,6 +46,7 @@ namespace Bug_Tracker
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 ); ;
             services.AddScoped<IBoardRepository, BoardRepository>();
+            services.AddScoped<IEventsRepository, EventsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
