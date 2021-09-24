@@ -1,10 +1,7 @@
 ﻿using Bug_Tracker.Data;
+using Bug_Tracker.Interfaces;
 using Bug_Tracker.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,88 +13,89 @@ namespace Bug_Tracker.Controllers
     public class BoardController : ControllerBase
     {
         private ApplicationDbContext _context;
-        public BoardController(ApplicationDbContext context)
+        private readonly IBoardRepository _boardRepository;
+        public BoardController(ApplicationDbContext context, IBoardRepository boardRepository)
         {
             _context = context;
+            _boardRepository = boardRepository;
         }
-        // GET: api/<BoardController>
+
+        // GET: api/Board/id Gets all of a users boards
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> GetAllBoards(int id)
         {
-            var boards = _context.UserBoard.Include(ub => ub.Board).Where(b => b.UserId == id && b.InviteAccepted == true);
-            return Ok(boards);
+            return new ObjectResult(await _boardRepository.GetAllBoards(id));
         }
 
+        // GET: api/Board/InvitedBoards/userId Gets all of the boards a user was invited to
         [HttpGet("InvitedBoards/{userId}")]
-        public IActionResult getInvitedBoards(int userId)
+        public async Task<IActionResult> GetInvitedBoards(int userId)
         {
-            var boards = _context.UserBoard.Include(ub => ub.Board).Where(b => b.UserId == userId && b.InviteAccepted == false);
-            return Ok(boards);
+            return new ObjectResult(await _boardRepository.GetInvitedBoards(userId));
         }
 
-        // GET api/<BoardController>/5
-        //[HttpGet("{id}")]
-        //public IActionResult GetusersBoard(int id)
-        //{
-
-        //}
+        // GET: api/Board/CurrentBoard/id/userId Gets the current board a user has clicked on
         [HttpGet("CurrentBoard/{id}/{userId}")]
-        public IActionResult GetBoard(int id, int userId)
+        public async Task<IActionResult> GetBoard(int id, int userId)
         {
-            //QUERY ALL BOARDS OF A USER FROM JUNCTION TABLE HERE
-            var board = _context.UserBoard.Include(b => b.Board).Where(ub => ub.BoardId == id && ub.UserId == userId);
+            UserBoard board = await _boardRepository.GetBoard(id, userId);
+            if(board == null)
+            {
+                return NotFound();
+            }
             return Ok(board);
-
         }
 
-        // POST api/<BoardController>
+        // POST api/Board
         [HttpPost]
-        public IActionResult Post([FromBody] Board value)
+        public async Task<IActionResult> AddNewBoard([FromBody] Board value)
         {
-            _context.Boards.Add(value);
-            _context.SaveChanges();
-            return StatusCode(200, value);
+            if(ModelState.IsValid)
+            {
+                bool isValid = await _boardRepository.AddNewBoard(value);
+                if (isValid)
+                {
+                    return Ok(value);
+                }
+            }
+            return BadRequest();
+
         }
 
+        // POST api/board/addUserToBoard/userId
         [HttpPost("addUserToBoard/{userId}")]
-        public IActionResult AddBoardToUserBoard(int userId, [FromBody] Board value)
+        public async Task <IActionResult>AddBoardToUserBoard(int userId, [FromBody] Board value)
         {
-            var newUserBoard = new UserBoard()
+            bool isValid = await _boardRepository.AddBoardToUserBoard(userId, value);
+            if(isValid)
             {
-                UserId = userId,
-                BoardId = value.BoardId,
-                RolesId = 3,
-                InviteAccepted = true,
-            };
-            _context.UserBoard.Add(newUserBoard);
-            _context.SaveChanges();
-            return Ok();
-        }
-        [HttpPost("acceptBoardInvitation/{userId}")]
-        public IActionResult AcceptBoardInvite([FromBody] Board value, int userId)
-        {
-            var oldUserBoardRelationship = _context.UserBoard.Where(ub => ub.BoardId == value.BoardId && ub.UserId == userId).SingleOrDefault();
-            _context.UserBoard.Remove(oldUserBoardRelationship);
-            UserBoard newUserBoard = new UserBoard()
-            {
-                UserId = userId,
-                BoardId = value.BoardId,
-                RolesId = 2,
-                InviteAccepted = true,
-            };
-            _context.UserBoard.Add(newUserBoard);
-            _context.SaveChanges();
-            return Ok();
+                return Ok();
+            }
+            return BadRequest();
         }
 
-        // DELETE api/<BoardController>/5
-        [HttpDelete("removeBoard/{boardId}/User/{userId}")]
-        public IActionResult RemoveBoard(int boardId, int userId)
+        // POST api/board/acceptedBoardInvitation/userId
+        [HttpPost("acceptBoardInvitation/{userId}")]
+        public async  Task<IActionResult>AcceptBoardInvite([FromBody] Board value, int userId)
         {
-            var userBoardRelationship = _context.UserBoard.Where(ub => ub.BoardId == boardId && ub.UserId == userId).SingleOrDefault();
-            _context.UserBoard.Remove(userBoardRelationship);
-            _context.SaveChanges();
-            return Ok();
+           bool isValid = await _boardRepository.AcceptBoardInvite(value, userId);
+           if(isValid)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        // DELETE api/Board/removeBoard/boardId/user/userId
+        [HttpDelete("removeBoard/{boardId}/User/{userId}")]
+        public async Task<IActionResult>RemoveBoardRelationship(int boardId, int userId)
+        {
+            bool isValid = await _boardRepository.RemoveBoardRelationship(boardId, userId);
+            if(isValid)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }
