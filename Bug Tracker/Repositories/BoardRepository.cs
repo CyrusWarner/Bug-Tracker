@@ -51,7 +51,7 @@ namespace Bug_Tracker.Repositories
         public async Task<bool>AddBoardToUserBoard(int userId, Board board)
         {
             bool boardExists = await BoardExists(board.BoardId);
-            if(boardExists)
+            if(!boardExists)
             {
                 var newUserBoard = new UserBoard()
                 {
@@ -70,7 +70,7 @@ namespace Bug_Tracker.Repositories
         public async Task<bool>AcceptBoardInvite(Board board, int userId)
         {
             bool boardExists = await BoardExists(board.BoardId);
-            if (boardExists)
+            if (!boardExists)
             {
                 var oldUserBoardRelationship = _context.UserBoard.Where(ub => ub.BoardId == board.BoardId && ub.UserId == userId).SingleOrDefault();
                 _context.UserBoard.Remove(oldUserBoardRelationship);
