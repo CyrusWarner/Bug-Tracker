@@ -1,5 +1,7 @@
 ﻿using Bug_Tracker.Data;
+using Bug_Tracker.Interfaces;
 using Bug_Tracker.Models;
+using Bug_Tracker.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -15,57 +17,59 @@ namespace Bug_Tracker.Controllers
     [ApiController]
     public class IssuesController : ControllerBase
     {
-        private ApplicationDbContext _context;
-        public IssuesController(ApplicationDbContext context)
+        private readonly IIssuesRepository _issuesRepository;
+        public IssuesController(IIssuesRepository issuesRepository)
         {
-            _context = context;
+            _issuesRepository = issuesRepository;
         }
         // GET: api/<IssuesController>
         [HttpGet("BoardIssues/{id}")]
-        public IActionResult GetBoardIssues(int id)
+        public async Task<IActionResult> GetBoardIssues(int id)
         {
-            var issues = _context.Issues.Where(issue => issue.BoardId == id);
-            return StatusCode(200, issues);
+            return new ObjectResult(await _issuesRepository.GetBoardIssues(id));
         }
 
         // GET api/<IssuesController>/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> GetIssue(int id)
         {
-            var currentIssue = _context.Issues.FirstOrDefault(issue => issue.IssuesId == id);
-            return Ok(currentIssue);
+            return new ObjectResult(await _issuesRepository.GetIssue(id));
         }
 
         // POST api/<IssuesController>
         [HttpPost]
-        public IActionResult Post([FromBody]Issues value)
+        public async Task<IActionResult> AddNewIssue([FromBody]Issues value)
         {
-            _context.Issues.Add(value);
-            _context.SaveChanges();
-            return Ok(value);
+            bool isValid = await _issuesRepository.AddNewIssue(value);
+            if (isValid)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         // PUT api/<IssuesController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Issues value)
+        public async Task<IActionResult> UpdateIssue(int id, [FromBody] Issues value)
         {
-            var issue = _context.Issues.FirstOrDefault(issue => issue.IssuesId == id);
-            issue.Title = value.Title;
-            issue.Description = value.Description;
-            issue.isCompleted = value.isCompleted;
-            issue.UserId = value.UserId;
-            _context.SaveChanges();
-            return Ok(value);
+            bool isValid = await _issuesRepository.UpdateIssue(id, value);
+            if(isValid)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         // DELETE api/<IssuesController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteIssue(int id)
         {
-            var issue = _context.Issues.FirstOrDefault(issue => issue.IssuesId == id);
-            _context.Remove(issue);
-            _context.SaveChanges();
-            return Ok();
+            bool isValid = await _issuesRepository.DeleteIssue(id);
+            if (isValid)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }
