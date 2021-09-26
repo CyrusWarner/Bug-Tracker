@@ -11,12 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 
 namespace Bug_Tracker
 {
@@ -47,6 +41,7 @@ namespace Bug_Tracker
 ); ;
             services.AddScoped<IBoardRepository, BoardRepository>();
             services.AddScoped<IEventsRepository, EventsRepository>();
+            services.AddScoped<IIssuesRepository, IssuesRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
