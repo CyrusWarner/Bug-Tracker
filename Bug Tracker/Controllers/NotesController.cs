@@ -1,4 +1,5 @@
 ﻿using Bug_Tracker.Data;
+using Bug_Tracker.Interfaces;
 using Bug_Tracker.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,58 +15,59 @@ namespace Bug_Tracker.Controllers
     [ApiController]
     public class NotesController : ControllerBase
     {
-        private ApplicationDbContext _context;
-        public NotesController(ApplicationDbContext context)
+        private readonly INotesRepository _notesRepository;
+        public NotesController(INotesRepository notesRepository)
         {
-            _context = context;
+            _notesRepository = notesRepository;
         }
         // GET: api/<NotesController>
         [HttpGet("BoardNotes/board/{boardId}/user/{userId}")]
-        public IActionResult GetBoardNotes(int boardId, int userId)
+        public async Task <IActionResult> GetBoardNotes(int boardId, int userId)
         {
-            var notes = _context.Notes.Where(note => note.BoardId == boardId && note.UserId == userId);
-            return Ok(notes);
+            return new ObjectResult(await _notesRepository.GetBoardNotes(boardId, userId));
         }
 
         // GET api/<NotesController>/5
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        [HttpGet("{noteId}")]
+        public async Task<IActionResult> GetNote(int noteId)
         {
-            var note = _context.Notes.FirstOrDefault(note => note.NotesId == id);
-            return Ok(note);
+            return new ObjectResult(await _notesRepository.GetNote(noteId));
         }
 
         // POST api/<NotesController>
         [HttpPost("New")]
-        public IActionResult Post([FromBody]Notes value)
+        public async Task<IActionResult> AddNewNote([FromBody]Notes value)
         {
-            _context.Notes.Add(value);
-            _context.SaveChanges();
-            return Ok(value);
+            bool isValid = await _notesRepository.AddNewNote(value);
+            if (isValid)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         // PUT api/<NotesController>/5
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]Notes value)
+        [HttpPut("{noteId}")]
+        public async Task<IActionResult> UpdateNote(int noteId, [FromBody]Notes value)
         {
-            var note = _context.Notes.FirstOrDefault(note => note.NotesId == id);
-            note.Title = value.Title;
-            note.Description = value.Description;
-            note.UserId = value.UserId;
-            note.BoardId = value.BoardId;
-            _context.SaveChanges();
-            return Ok(value);
-
+            bool isValid = await _notesRepository.UpdateNote(noteId, value);
+            if(isValid)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         // DELETE api/<NotesController>/5
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("{noteId}")]
+        public async Task<IActionResult> DeleteNote(int noteId)
         {
-            var note = _context.Notes.FirstOrDefault(note => note.NotesId == id);
-            _context.Remove(note);
-            _context.SaveChanges();
-            return Ok();
+            bool isValid = await _notesRepository.DeleteNote(noteId);
+            if(isValid)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }
