@@ -154,7 +154,7 @@ namespace BugTracker.Tests
         public async Task AcceptBoardInvite_WithNonExistingBoard_ShouldReturnBadRequestIfInvalid()
         {
             // Arrange
-            var board = createRandomBoard();
+            var board = CreateRandomBoard();
 
             repositoryStub.Setup(repo => repo.AddBoardToUserBoard(It.IsAny<int>(), board))
                 .ReturnsAsync(false);
@@ -172,7 +172,7 @@ namespace BugTracker.Tests
         public async Task AcceptBoardInvite_WithExistingBoard_ShouldReturnOkResult()
         {
             // Arrange
-            var board = createRandomBoard();
+            var board = CreateRandomBoard();
 
             repositoryStub.Setup(repo => repo.AddBoardToUserBoard(It.IsAny<int>(), board))
                 .ReturnsAsync(true);
@@ -190,7 +190,7 @@ namespace BugTracker.Tests
         public async Task RemoveBoardRelationship_WithNonExistingBoard_ShouldReturnBadRequest()
         {
             // Arrange
-            var board = createRandomBoard();
+            var board = CreateRandomBoard();
 
             repositoryStub.Setup(repo => repo.AddBoardToUserBoard(It.IsAny<int>(), board))
                 .ReturnsAsync(false);
@@ -208,7 +208,7 @@ namespace BugTracker.Tests
         public async Task RemoveBoardRelationship_WithExistingBoard_ShouldReturnOkResult()
         {
             // Arrange
-            var board = createRandomBoard();
+            var board = CreateRandomBoard();
 
             repositoryStub.Setup(repo => repo.AddBoardToUserBoard(It.IsAny<int>(), board))
                 .ReturnsAsync(true);
@@ -234,7 +234,7 @@ namespace BugTracker.Tests
             };
         }
 
-        private Board createRandomBoard()
+        private Board CreateRandomBoard()
         {
             return new()
             {
