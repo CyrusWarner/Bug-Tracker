@@ -36,14 +36,9 @@ namespace Bug_Tracker.Repositories
 
         public async Task<bool> AddNewNote(Notes note)
         {
-            bool noteExists = await NoteExists(note.NotesId);
-            if (!noteExists)
-            {
-                _context.Notes.Add(note);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+              _context.Notes.Add(note);
+              await _context.SaveChangesAsync();
+              return true;
         }
 
         public async Task<bool> UpdateNote(int noteId, Notes note)

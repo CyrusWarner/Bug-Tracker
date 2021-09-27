@@ -32,14 +32,9 @@ namespace Bug_Tracker.Repositories
         }
         public async Task<bool> AddNewIssue(Issues issue)
         {
-            bool issueExists = await IssueExists(issue.IssuesId);
-            if(!issueExists)
-            {
-                _context.Issues.Add(issue);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+           _context.Issues.Add(issue);
+            await _context.SaveChangesAsync();
+            return true;
         }
         public async Task<bool> UpdateIssue(int id, Issues issue)
         {

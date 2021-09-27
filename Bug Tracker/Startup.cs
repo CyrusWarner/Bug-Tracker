@@ -43,6 +43,7 @@ namespace Bug_Tracker
             services.AddScoped<IEventsRepository, EventsRepository>();
             services.AddScoped<IIssuesRepository, IssuesRepository>();
             services.AddScoped<INotesRepository, NotesRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

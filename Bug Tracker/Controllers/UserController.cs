@@ -1,4 +1,5 @@
 ﻿using Bug_Tracker.Data;
+using Bug_Tracker.Interfaces;
 using Bug_Tracker.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,117 +16,83 @@ namespace Bug_Tracker.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public UserController(ApplicationDbContext context)
+        private readonly IUserRepository _userRepository;
+        public UserController(IUserRepository userRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task <IActionResult> GetAllUsers()
         {
-            var users = _context.Users;
-            return Ok(users);
+            return new ObjectResult(await _userRepository.GetAllUsers());
         }
         // GET: api/<UserController>
         [HttpGet("{boardId}")]
-        public IActionResult Get(int boardId)
+        public async Task<IActionResult> GetBoardUsers(int boardId)
         {
-            var users = _context.UserBoard.Include(u => u.User).Include(r => r.Roles).Where(ub => ub.BoardId == boardId);
-            return Ok(users);
+            return new ObjectResult(await _userRepository.GetBoardUsers(boardId));
         }
 
         [HttpGet("GetUserRole/Board/{boardId}/User/{userId}")]
-        public IActionResult GetUserRole(int boardId, int userId)
+        public async Task<IActionResult> GetUserRole(int boardId, int userId)
         {
-            var userRole = _context.UserBoard.Include(ur => ur.Roles).Where(u => u.BoardId == boardId && u.UserId == userId);
-            return Ok(userRole);
+            return new ObjectResult(await _userRepository.GetUserRole(boardId, userId));
         }
 
 
 
         // GET api/<UserController>/5
         [HttpPost("Login")]
-        public IActionResult GetUser([FromBody] User value)
+        public async Task<IActionResult> LoginUser([FromBody] User value)
         {
-                var user = _context.Users.FirstOrDefault(user => user.Email == value.Email && user.Password == value.Password);
-            if (user == null)
-            {
-                return StatusCode(404);
-            }
-                return StatusCode(200, user);
-
+            return new ObjectResult(await _userRepository.LoginUser(value));
         }
         // POST api/User>
         [HttpPost]
-        public IActionResult Post([FromBody] User value)
+        public async Task<IActionResult> RegisterUser([FromBody] User value)
         {
-            var users = _context.Users.Where(user => user.Email == value.Email);
-            if (users.Count() == 0)
+            bool isValid = await _userRepository.RegisterUser(value);
+            if (isValid)
             {
-                _context.Users.Add(value);
-                _context.SaveChanges();
-                return StatusCode(200, value);
+                return Ok();
             }
             return StatusCode(409);
-
         }
 
         [HttpPost("InvitingUserToBoard/{userId}")]
-        public IActionResult AddBoardToUserBoard(int userId, [FromBody] Board value)
+        public async Task<IActionResult> AddUserToUserBoard(int userId, [FromBody] Board value)
         {
-            var users = _context.UserBoard.Where(ub => ub.BoardId == value.BoardId && ub.UserId == userId);
-            if (users.Count() == 0)
+            bool isValid = await _userRepository.AddUserToUserBoard(userId, value);
+            if(isValid)
             {
-                var newUserBoard = new UserBoard()
-                {
-                    UserId = userId,
-                    BoardId = value.BoardId,
-                    RolesId = 2,
-                    InviteAccepted = false,
-                };
-                _context.UserBoard.Add(newUserBoard);
-                _context.SaveChanges();
                 return Ok();
             }
             return StatusCode(409);
         }
 
         [HttpPost("EditRole/{roleId}")]
-        public IActionResult EditRole([FromBody] UserBoard value, int roleId)
+        public async Task<IActionResult> EditUserRole([FromBody] UserBoard value, int roleId)
         {
-            var oldBoardUserRelationship = _context.UserBoard.Where(ub => ub.UserId == value.UserId && ub.BoardId == value.BoardId).SingleOrDefault();
-            _context.UserBoard.Remove(oldBoardUserRelationship);
-            UserBoard updatedUserBoardRole = new UserBoard()
+            bool isValid = await _userRepository.EditUserRole(value, roleId);
+            if (isValid)
             {
-                UserId = value.UserId,
-                BoardId = value.BoardId,
-                RolesId = roleId,
-                InviteAccepted = true
-            };
-            _context.UserBoard.Add(updatedUserBoardRole);
-            _context.SaveChanges();
-            return Ok();
+                return Ok();
+            }
+            return BadRequest();
+            
         }
-
-        //// PUT api/<UserController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
 
         // DELETE api/<UserController>/5
         [HttpDelete("{userId}/Board/{boardId}")]
-        public IActionResult Delete(int userId, int boardId)
+        public async Task<IActionResult> RemoveUserFromBoard(int userId, int boardId)
         {
-            var userBoardRelationship = _context.UserBoard.Where(ur => ur.UserId == userId && ur.BoardId == boardId);
-            foreach(UserBoard userRelationship in userBoardRelationship)
+            bool isValid = await _userRepository.RemoveUserFromBoard(userId, boardId);
+            if(isValid)
             {
-                _context.Remove(userRelationship);
-
+                return Ok();
             }
-            _context.SaveChanges();
-            return Ok();
+            return BadRequest();
         }
     }
 }
