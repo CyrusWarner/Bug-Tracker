@@ -78,6 +78,28 @@ namespace BugTracker.Tests
                 options => options.ComparingByMembers<UserBoard>());
         }
 
+        [Fact]
+        public async Task AddNewBoard_WithBoardToCreate_ReturnsCreatedItem()
+        {
+            // Arrange
+            Board boardToCreate = new()
+            {
+                Title = "Test Board",
+                Description = "This is a test",
+
+            };
+
+            var controller = new BoardController(repositoryStub.Object);
+
+            // Act
+
+            var actionResult = await controller.AddNewBoard(boardToCreate);
+            var okResult = actionResult as OkObjectResult;
+            // Assert
+            okResult.StatusCode.Should().Be(200);
+
+        }
+
         private UserBoard CreateRandomUserBoard()
         {
             return new()
@@ -89,5 +111,6 @@ namespace BugTracker.Tests
 
             };
         }
+            
     }
 }

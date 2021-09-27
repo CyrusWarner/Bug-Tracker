@@ -50,11 +50,8 @@ namespace Bug_Tracker.Controllers
         {
             if(ModelState.IsValid)
             {
-                bool isValid = await _boardRepository.AddNewBoard(value);
-                if (isValid)
-                {
-                    return Ok(value);
-                }
+               var board = await _boardRepository.AddNewBoard(value);
+               return Ok(board);
             }
             return BadRequest();
 

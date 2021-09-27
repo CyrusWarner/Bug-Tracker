@@ -10,7 +10,7 @@ namespace Bug_Tracker.Interfaces
         Task<IEnumerable>GetAllBoards(int id);
         Task<IEnumerable>GetInvitedBoards(int userId);
         Task<UserBoard>GetBoard(int id, int userId);
-        Task<bool>AddNewBoard(Board board);
+        Task<Board>AddNewBoard(Board board);
         Task<bool>AddBoardToUserBoard(int userId, Board board);
         Task<bool>AcceptBoardInvite(Board board, int userId);
         Task<bool>RemoveBoardRelationship(int boardId, int userId);

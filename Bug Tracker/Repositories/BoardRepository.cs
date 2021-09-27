@@ -36,18 +36,18 @@ namespace Bug_Tracker.Repositories
             return await _context.UserBoard.Include(b => b.Board).FirstOrDefaultAsync(ub => ub.BoardId == id && ub.UserId == userId);
         }
 
-        public async Task<bool>AddNewBoard(Board board)
+        public async Task<Board>AddNewBoard(Board board)
         {
            _context.Boards.Add(board);
            await _context.SaveChangesAsync();
-           return true;
+           return board;
 
         }
 
         public async Task<bool>AddBoardToUserBoard(int userId, Board board)
         {
             bool boardExists = await BoardExists(board.BoardId);
-            if(!boardExists)
+            if(boardExists)
             {
                 var newUserBoard = new UserBoard()
                 {
