@@ -100,6 +100,56 @@ namespace BugTracker.Tests
 
         }
 
+        [Fact]
+        public async Task AddBoardToUserBoard_WithNonExistingBoard_ShouldReturnBadRequest()
+        {
+            // Arrange
+            Board board = new()
+            {
+                BoardId = It.IsAny<int>(),
+                Title = "Test Board",
+                Description = "This is a test",
+
+            };
+
+            repositoryStub.Setup(repo => repo.AddBoardToUserBoard(It.IsAny<int>(), board))
+                .ReturnsAsync(false);
+
+            // Act
+            var controller = new BoardController(repositoryStub.Object);
+            var result = await controller.AddBoardToUserBoard(It.IsAny<int>(), board);
+
+            // Assert
+
+            result.Should().BeOfType<BadRequestResult>();
+
+        }
+
+        [Fact]
+        public async Task AddBoardToUserBoard_WithExistingBoard_ShouldReturnOkResult()
+        {
+            // Arrange
+            Board board = new()
+            {
+                BoardId = It.IsAny<int>(),
+                Title = "Test Board",
+                Description = "This is a test",
+
+            };
+
+            repositoryStub.Setup(repo => repo.AddBoardToUserBoard(It.IsAny<int>(), board))
+                .ReturnsAsync(true);
+
+            // Act
+            var controller = new BoardController(repositoryStub.Object);
+            var result = await controller.AddBoardToUserBoard(It.IsAny<int>(), board);
+
+            // Assert
+
+            result.Should().BeOfType<OkResult>();
+
+        }
+
         private UserBoard CreateRandomUserBoard()
         {
             return new()
