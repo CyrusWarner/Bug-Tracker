@@ -36,14 +36,9 @@ namespace Bug_Tracker.Repositories
 
         public async Task<bool> AddNewEvent(Events eventValue)
         {
-            bool eventExists = await EventExists(eventValue.EventsId);
-            if(!eventExists)
-            {
-                _context.Events.Add(eventValue);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            _context.Events.Add(eventValue);
+            await _context.SaveChangesAsync();
+            return true;
 
         }
 
