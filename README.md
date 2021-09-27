@@ -36,6 +36,8 @@ Creates a pleasing user interface for Software Developers looking to track what 
 - Add a request for uploading a .csv file and reading the file
 
 ### Task List: 
+:heavy_check_mark: Finished moving controller logic to business layer
+
 :heavy_check_mark: Finished adding a model for users table
 
 :heavy_check_mark: Finished adding a model for boards table 
