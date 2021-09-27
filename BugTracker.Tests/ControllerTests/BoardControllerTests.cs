@@ -29,7 +29,7 @@ namespace BugTracker.Tests
             var result = await controller.GetBoard(It.IsAny<int>(), (It.IsAny<int>()));
 
             // Assert Verfiy whatever we are testing
-            Assert.IsType<NotFoundResult>(result);
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
@@ -55,13 +55,36 @@ namespace BugTracker.Tests
 
         }
 
+        [Fact]
+        public async Task GetAllBoards_WithExistingItems_ReturnsAllBoards()
+        {
+            // Arrange
+            var expectedBoards = new[] { CreateRandomUserBoard(), CreateRandomUserBoard(), CreateRandomUserBoard() };
+
+            repositoryStub.Setup(repo => repo.GetAllBoards(It.IsAny<int>()))
+                .ReturnsAsync(expectedBoards);
+
+            var controller = new BoardController(repositoryStub.Object);
+
+            // Act
+
+            var actionResult = await controller.GetAllBoards(It.IsAny<int>());
+            var okResult = actionResult as ObjectResult;
+            var actualUserBoards = okResult.Value;
+
+            // Assert
+            actualUserBoards.Should().BeEquivalentTo(
+                expectedBoards,
+                options => options.ComparingByMembers<UserBoard>());
+        }
+
         private UserBoard CreateRandomUserBoard()
         {
             return new()
             {
                 UserId = It.IsAny<int>(),
                 BoardId = It.IsAny<int>(),
-                InviteAccepted = It.IsAny<bool>(),
+                InviteAccepted = true,
                 RolesId = rand.Next(4),
 
             };
