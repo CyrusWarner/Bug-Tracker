@@ -150,6 +150,78 @@ namespace BugTracker.Tests
 
         }
 
+        [Fact]
+        public async Task AcceptBoardInvite_WithNonExistingBoard_ShouldReturnBadRequestIfInvalid()
+        {
+            // Arrange
+            var board = createRandomBoard();
+
+            repositoryStub.Setup(repo => repo.AddBoardToUserBoard(It.IsAny<int>(), board))
+                .ReturnsAsync(false);
+
+            // Act
+            var controller = new BoardController(repositoryStub.Object);
+            var result = await controller.AddBoardToUserBoard(It.IsAny<int>(), board);
+
+            // Assert
+
+            result.Should().BeOfType<BadRequestResult>();
+        }
+
+        [Fact]
+        public async Task AcceptBoardInvite_WithExistingBoard_ShouldReturnOkResult()
+        {
+            // Arrange
+            var board = createRandomBoard();
+
+            repositoryStub.Setup(repo => repo.AddBoardToUserBoard(It.IsAny<int>(), board))
+                .ReturnsAsync(true);
+
+            // Act
+            var controller = new BoardController(repositoryStub.Object);
+            var result = await controller.AddBoardToUserBoard(It.IsAny<int>(), board);
+
+            // Assert
+
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Fact]
+        public async Task RemoveBoardRelationship_WithNonExistingBoard_ShouldReturnBadRequest()
+        {
+            // Arrange
+            var board = createRandomBoard();
+
+            repositoryStub.Setup(repo => repo.AddBoardToUserBoard(It.IsAny<int>(), board))
+                .ReturnsAsync(false);
+
+            // Act
+            var controller = new BoardController(repositoryStub.Object);
+            var result = await controller.AddBoardToUserBoard(It.IsAny<int>(), board);
+
+            // Assert
+
+            result.Should().BeOfType<BadRequestResult>();
+        }
+
+        [Fact]
+        public async Task RemoveBoardRelationship_WithExistingBoard_ShouldReturnOkResult()
+        {
+            // Arrange
+            var board = createRandomBoard();
+
+            repositoryStub.Setup(repo => repo.AddBoardToUserBoard(It.IsAny<int>(), board))
+                .ReturnsAsync(true);
+
+            // Act
+            var controller = new BoardController(repositoryStub.Object);
+            var result = await controller.AddBoardToUserBoard(It.IsAny<int>(), board);
+
+            // Assert
+
+            result.Should().BeOfType<OkResult>();
+        }
+
         private UserBoard CreateRandomUserBoard()
         {
             return new()
@@ -159,6 +231,16 @@ namespace BugTracker.Tests
                 InviteAccepted = true,
                 RolesId = rand.Next(4),
 
+            };
+        }
+
+        private Board createRandomBoard()
+        {
+            return new()
+            {
+                BoardId = It.IsAny<int>(),
+                Title = "Test Board",
+                Description = "This is a test",
             };
         }
             
