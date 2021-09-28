@@ -20,6 +20,29 @@ namespace BugTracker.Tests.ControllerTests
         private readonly Random rand = new Random();
 
         [Fact]
+        public async Task GetBoardIssues_WithUnexistingIssues_ShouldReturnEmptyArray()
+        {
+            var expcetedIssues = new[] { CreateRandomIssue(), CreateRandomIssue(), CreateRandomIssue() };
+            // Arrange Any mocks variables and inputs
+            repositoryStub.Setup(repo => repo.GetBoardIssues(It.IsAny<int>()))
+                .ReturnsAsync(expcetedIssues);
+
+            var controller = new IssuesController(repositoryStub.Object);
+
+            // Act Execute the test and perform action we are testing
+            var result = await controller.GetBoardIssues(It.IsAny<int>());
+            var okResult = result as ObjectResult;
+            var actualBoardIssues = okResult.Value;
+
+            // Assert Verfiy whatever we are testing
+            actualBoardIssues.Should().BeEquivalentTo(
+                expcetedIssues,
+                options => options.ComparingByMembers<Issues>()
+                );
+        }
+
+
+        [Fact]
         public async Task AddNewIssue_WithisValidBeingTrue_ShouldReturnOkResult()
         {
             // Arrange
