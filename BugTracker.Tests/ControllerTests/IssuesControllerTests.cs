@@ -108,6 +108,23 @@ namespace BugTracker.Tests.ControllerTests
             result.Should().BeOfType<OkResult>();
         }
 
+        [Fact]
+        public async Task DeleteIssue_WithisValidBeingFalse_ShouldReturnBadRequest()
+        {
+            // Arrange
+
+            repositoryStub.Setup(repo => repo.DeleteIssue(It.IsAny<int>()))
+                .ReturnsAsync(false);
+
+            var controller = new IssuesController(repositoryStub.Object);
+
+            // Act
+            var result = await controller.DeleteIssue(It.IsAny<int>());
+
+            // Assert
+            result.Should().BeOfType<BadRequestResult>();
+        }
+
         private Issues CreateRandomIssue()
         {
             return new()
