@@ -29,13 +29,6 @@ namespace Bug_Tracker.Controllers
             return new ObjectResult(await _issuesRepository.GetBoardIssues(id));
         }
 
-        // GET api/<IssuesController>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetIssue(int id)
-        {
-            return new ObjectResult(await _issuesRepository.GetIssue(id));
-        }
-
         // POST api/<IssuesController>
         [HttpPost]
         public async Task<IActionResult> AddNewIssue([FromBody]Issues value)

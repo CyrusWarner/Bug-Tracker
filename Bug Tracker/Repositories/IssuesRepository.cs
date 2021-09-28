@@ -26,10 +26,6 @@ namespace Bug_Tracker.Repositories
         {
             return await _context.Issues.Where(issue => issue.BoardId == id).ToListAsync();
         }
-        public async Task<IEnumerable> GetIssue(int id)
-        {
-            return await _context.Issues.Where(issue => issue.IssuesId == id).ToListAsync();
-        }
         public async Task<bool> AddNewIssue(Issues issue)
         {
            _context.Issues.Add(issue);
