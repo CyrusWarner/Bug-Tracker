@@ -20,7 +20,7 @@ namespace BugTracker.Tests.ControllerTests
         private readonly Random rand = new Random();
 
         [Fact]
-        public async Task AddNewIssue_WithisValidBeingTrue_ShouldReturnStatusCode200()
+        public async Task AddNewIssue_WithisValidBeingTrue_ShouldReturnOkResult()
         {
             // Arrange
             Issues issueToCreate = CreateRandomIssue();
@@ -33,7 +33,7 @@ namespace BugTracker.Tests.ControllerTests
             // Act
             var result = await controller.AddNewIssue(issueToCreate);
 
-            //
+            // Assert
             result.Should().BeOfType<OkResult>();
         }
 
@@ -51,8 +51,61 @@ namespace BugTracker.Tests.ControllerTests
             // Act
             var result = await controller.AddNewIssue(issueToCreate);
 
-            //
+            // Assert
             result.Should().BeOfType<BadRequestResult>();
+        }
+
+        [Fact]
+        public async Task UpdateIssue_WithisValidBeingTrue_ShouldReturnOkResult()
+        {
+            // Arrange
+            Issues issueToUpdate = CreateRandomIssue();
+
+            repositoryStub.Setup(repo => repo.UpdateIssue(It.IsAny<int>(), issueToUpdate))
+                .ReturnsAsync(true);
+
+            var controller = new IssuesController(repositoryStub.Object);
+
+            // Act
+            var result = await controller.UpdateIssue(It.IsAny<int>(), issueToUpdate);
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Fact]
+        public async Task UpdateIssue_WithisValidBeingFalse_ShouldReturnBadRequest()
+        {
+            // Arrange
+            Issues issueToUpdate = CreateRandomIssue();
+
+            repositoryStub.Setup(repo => repo.UpdateIssue(It.IsAny<int>(), issueToUpdate))
+                .ReturnsAsync(false);
+
+            var controller = new IssuesController(repositoryStub.Object);
+
+            // Act
+            var result = await controller.UpdateIssue(It.IsAny<int>(), issueToUpdate);
+
+            // Assert
+            result.Should().BeOfType<BadRequestResult>();
+        }
+
+        [Fact]
+        public async Task DeleteIssue_WithisValidBeingTrue_ShouldReturnOkResult()
+        {
+            // Arrange
+
+            repositoryStub.Setup(repo => repo.DeleteIssue(It.IsAny<int>()))
+                .ReturnsAsync(true);
+
+            var controller = new IssuesController(repositoryStub.Object);
+
+            // Act
+            var result = await controller.DeleteIssue(It.IsAny<int>());
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
         }
 
         private Issues CreateRandomIssue()
