@@ -55,6 +55,22 @@ namespace BugTracker.Tests.ControllerTests
             result.Should().BeOfType<OkResult>();
         }
 
+        [Fact]
+        public async Task AddNewEvent_withIsValidBeingFalse_ShouldReturnBadRequest()
+        {
+            // Arrange
+            var newEvent = CreateRandomEvent();
+            repositoryStub.Setup(repo => repo.AddNewEvent(newEvent))
+                .ReturnsAsync(false);
+
+            // Act
+            var controller = new EventsController(repositoryStub.Object);
+            var result = await controller.AddNewEvent(newEvent);
+
+            // Assert
+            result.Should().BeOfType<BadRequestResult>();
+        }
+
         private Events CreateRandomEvent()
         {
             return new()
