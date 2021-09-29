@@ -39,6 +39,22 @@ namespace BugTracker.Tests.ControllerTests
                 options => options.ComparingByMembers<Events>());
         }
 
+        [Fact]
+        public async Task AddNewEvent_withIsValidBeingTrue_ShouldReturnOkResult()
+        {
+            // Arrange
+            var newEvent = CreateRandomEvent();
+            repositoryStub.Setup(repo => repo.AddNewEvent(newEvent))
+                .ReturnsAsync(true);
+
+            // Act
+            var controller = new EventsController(repositoryStub.Object);
+            var result = await controller.AddNewEvent(newEvent);
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
+        }
+
         private Events CreateRandomEvent()
         {
             return new()
