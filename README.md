@@ -38,6 +38,10 @@ Creates a pleasing user interface for Software Developers looking to track what 
 ### Task List: 
 :heavy_check_mark: Finished moving controller logic to business layer
 
+:heavy_check_mark: Finished adding unit tests for user controller
+
+:heavy_check_mark: Finished adding unit tests for issues controller
+
 :heavy_check_mark: Finished adding a model for users table
 
 :heavy_check_mark: Finished adding a model for boards table 
