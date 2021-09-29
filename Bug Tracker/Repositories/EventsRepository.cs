@@ -118,17 +118,17 @@ namespace Bug_Tracker.Repositories
 
             if (line == null)
             {
-                return false;
+                 isValid = false;
             }
 
             if (line[0] == "")
             {
-                return false;
+                isValid = false;
             }
 
             if (line[1] == "")
             {
-                return false;
+                isValid = false;
             }
             try
             {
@@ -136,12 +136,12 @@ namespace Bug_Tracker.Repositories
             }
             catch
             {
-                return false;
+                isValid = false;
             }
 
             if (DateTime.Parse(line[1]) == DateTime.MinValue)
             {
-                return false;
+                isValid = false;
             }
 
             return isValid;

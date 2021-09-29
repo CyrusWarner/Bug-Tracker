@@ -101,6 +101,41 @@ namespace BugTracker.Tests.ControllerTests
             result.Should().BeOfType<BadRequestResult>();
         }
 
+        [Fact]
+        public async Task ChangeEventDate_withIsValidBeingTrue_ShouldReturnOkResult()
+        {
+            // Arrange
+            var eventToDelete = CreateRandomEvent();
+
+            repositoryStub.Setup(repo => repo.ChangeEventDate(eventToDelete))
+                .ReturnsAsync(true);
+
+            // Act
+            var controller = new EventsController(repositoryStub.Object);
+            var result = await controller.ChangeEventDate(eventToDelete);
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Fact]
+        public async Task ChangeEventDate_withIsValidBeingFalse_ShouldReturnBadRequestResult()
+        {
+            // Arrange
+            var eventToDelete = CreateRandomEvent();
+
+            repositoryStub.Setup(repo => repo.ChangeEventDate(eventToDelete))
+                .ReturnsAsync(false);
+
+            // Act
+            var controller = new EventsController(repositoryStub.Object);
+            var result = await controller.ChangeEventDate(eventToDelete);
+
+            // Assert
+            result.Should().BeOfType<BadRequestResult>();
+        }
+
+
         private Events CreateRandomEvent()
         {
             return new()
