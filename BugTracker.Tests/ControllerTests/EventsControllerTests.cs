@@ -43,13 +43,13 @@ namespace BugTracker.Tests.ControllerTests
         public async Task AddNewEvent_withIsValidBeingTrue_ShouldReturnOkResult()
         {
             // Arrange
-            var newEvent = CreateRandomEvent();
-            repositoryStub.Setup(repo => repo.AddNewEvent(newEvent))
+            var eventToAdd = CreateRandomEvent();
+            repositoryStub.Setup(repo => repo.AddNewEvent(eventToAdd))
                 .ReturnsAsync(true);
 
             // Act
             var controller = new EventsController(repositoryStub.Object);
-            var result = await controller.AddNewEvent(newEvent);
+            var result = await controller.AddNewEvent(eventToAdd);
 
             // Assert
             result.Should().BeOfType<OkResult>();
@@ -59,13 +59,43 @@ namespace BugTracker.Tests.ControllerTests
         public async Task AddNewEvent_withIsValidBeingFalse_ShouldReturnBadRequest()
         {
             // Arrange
-            var newEvent = CreateRandomEvent();
-            repositoryStub.Setup(repo => repo.AddNewEvent(newEvent))
+            var eventToAdd = CreateRandomEvent();
+            repositoryStub.Setup(repo => repo.AddNewEvent(eventToAdd))
                 .ReturnsAsync(false);
 
             // Act
             var controller = new EventsController(repositoryStub.Object);
-            var result = await controller.AddNewEvent(newEvent);
+            var result = await controller.AddNewEvent(eventToAdd);
+
+            // Assert
+            result.Should().BeOfType<BadRequestResult>();
+        }
+
+        [Fact]
+        public async Task DeleteEvent_withIsValidBeingTrue_ShouldReturnOkResult()
+        {
+            // Arrange
+            repositoryStub.Setup(repo => repo.DeleteEvent(It.IsAny<int>()))
+                .ReturnsAsync(true);
+
+            // Act
+            var controller = new EventsController(repositoryStub.Object);
+            var result = await controller.DeleteEvent(It.IsAny<int>());
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Fact]
+        public async Task DeleteEvent_withIsValidBeingFalse_ShouldReturnBadRequest()
+        {
+            // Arrange
+            repositoryStub.Setup(repo => repo.DeleteEvent(It.IsAny<int>()))
+                .ReturnsAsync(false);
+
+            // Act
+            var controller = new EventsController(repositoryStub.Object);
+            var result = await controller.DeleteEvent(It.IsAny<int>());
 
             // Assert
             result.Should().BeOfType<BadRequestResult>();
