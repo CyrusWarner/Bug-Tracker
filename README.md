@@ -14,7 +14,7 @@ Creates a pleasing user interface for Software Developers looking to track what 
 ## Project Status :green_circle:
 ### Goals
 - Move all logic to Business Layer
-- Add unit testing for repositories and controllers
+- Add unit tests for repositories and controllers
 - Add a request for signing up
 - Add a request for logging in
 - Add a request for creating a new board
