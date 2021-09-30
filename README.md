@@ -14,7 +14,7 @@ Creates a pleasing user interface for Software Developers looking to track what 
 ## Project Status :green_circle:
 ### Goals
 - Move all logic to Business Layer
-- Add unit testing
+- Add unit testing for repositories and controllers
 - Add a request for signing up
 - Add a request for logging in
 - Add a request for creating a new board
@@ -59,38 +59,6 @@ Creates a pleasing user interface for Software Developers looking to track what 
 :heavy_check_mark: Finished adding a request for logging in
 
 :heavy_check_mark: Finished adding a request for signing up
-
-:heavy_check_mark: Finished adding a request for creating a new board
-
-:heavy_check_mark: Finished adding a request for inviting a user to a board
-
-:heavy_check_mark: Finished adding a request for accepting a invite to a board
-
-:heavy_check_mark: Finished adding a request for denying a board invite
-
-:heavy_check_mark: Finished adding a request for creating a bug
-
-:heavy_check_mark: Finished adding a request for updating a bug
-
-:heavy_check_mark: Finished adding a request for deleting a bug
-
-:heavy_check_mark: Finished adding a request for adding a user to a board
-
-:heavy_check_mark: Finished adding a request for changing a users role
-
-:heavy_check_mark: Finished adding a request for removing a user from a board
-
-:heavy_check_mark: Finished adding a request for creating a new note
-
-:heavy_check_mark: Finished adding a request for updating a note
-
-:heavy_check_mark: Finished adding a request for deleting a note
-
-:heavy_check_mark: Finished adding a request for creating a new event
-
-:heavy_check_mark: Finished adding a request for for updating a event
-
-:heavy_check_mark: Finished adding a request for deleting a event
 
 :heavy_check_mark: Finished adding a request for reading a .csv file and saving the information to the database
 
