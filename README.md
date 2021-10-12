@@ -1,8 +1,6 @@
 # Bug Tracker
 ## Implementation of a bug tracking web application
 
-Creates a pleasing user interface for Software Developers looking to track what bugs they have completed and not completed.
-
 ## Table of Contents
 - [Project Status](#project-status)
    - [Goals](#goals)
@@ -71,7 +69,6 @@ BUGGED =    :warning:
  --->
 
 ### Future Tasks  
-:x: Add a method  for determing if a user has light or dark mode toggled
 
 :x: Add a request for removing a board
 
